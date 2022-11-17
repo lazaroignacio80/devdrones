@@ -14,7 +14,7 @@ public class Drone extends EntityBase {
     @Column(name = "serialNumber")
     private String serialNumber;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "model")
     private Model model;
 
@@ -24,7 +24,7 @@ public class Drone extends EntityBase {
     @Column(name = "batteryCapacity")
     private double batteryCapacity;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state;
 

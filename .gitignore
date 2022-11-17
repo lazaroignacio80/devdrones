@@ -1,0 +1,14 @@
+# Gradle
+.gradle
+/gradle
+/build/
+gradlew*
+
+# IDEs
+.idea
+*.iml
+/out/
+src/main/generated/
+
+# Temporal libraries
+lib

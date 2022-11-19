@@ -1,5 +1,6 @@
 package com.dev.drones.controller;
 
+import com.dev.drones.contract.to.DroneTO;
 import com.dev.drones.model.Drone;
 import com.dev.drones.repository.DroneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.dev.drones.contract.DroneBinder.DRONE_BINDER;
 
 @RestController
 @RequestMapping("/api")
@@ -18,10 +22,13 @@ public class DroneController {
     DroneRepository droneRepository;
 
     @GetMapping("/drones")
-    public ResponseEntity<List<Drone>> getAllDrones() {
+    public ResponseEntity<List<DroneTO>> getAllDrones() {
         try {
-            List<Drone> drones = new ArrayList<>();
-            droneRepository.findAll().forEach(drones::add);
+            List<DroneTO> drones = new ArrayList<>();
+            droneRepository.findAll()
+                    .stream()
+                    .map(drone ->  DRONE_BINDER.bind(drone))
+                    .forEach(drones::add);
             if (drones.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -32,41 +39,31 @@ public class DroneController {
     }
 
     @GetMapping("/drones/{id}")
-    public ResponseEntity<Drone> getDroneById(@PathVariable("id") long id) {
+    public ResponseEntity<DroneTO> getDroneById(@PathVariable("id") long id) {
         Optional<Drone> droneData = droneRepository.findById(id);
         if (droneData.isPresent()) {
-            return new ResponseEntity<>(droneData.get(), HttpStatus.OK);
+            return new ResponseEntity<>(DRONE_BINDER.bind(droneData.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/drones")
-    public ResponseEntity<Drone> createDrone(@RequestBody Drone drone) {
+    public ResponseEntity<DroneTO> createDrone(@Valid @RequestBody DroneTO droneTO) {
         try {
             Drone _drone = droneRepository
-                    .save(new Drone( drone.getSerialNumber(),
-                            drone.getModel(),
-                            drone.getWeightLimit(),
-                            drone.getBatteryCapacity(),
-                            drone.getState()));
-            return new ResponseEntity<>(_drone, HttpStatus.CREATED);
+                    .save(DRONE_BINDER.bind(droneTO));
+            return new ResponseEntity<>(DRONE_BINDER.bind(_drone), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/drones/{id}")
-    public ResponseEntity<Drone> updateDrone(@PathVariable("id") long id, @RequestBody Drone drone) {
+    public ResponseEntity<DroneTO> updateDrone(@PathVariable("id") long id, @Valid @RequestBody DroneTO droneTO) {
         Optional<Drone> droneData = droneRepository.findById(id);
         if (droneData.isPresent()) {
-            Drone _drone = droneData.get();
-            _drone.setSerialNumber(_drone.getSerialNumber());
-            _drone.setModel(_drone.getModel());
-            _drone.setWeightLimit(_drone.getWeightLimit());
-            _drone.setBatteryCapacity(_drone.getBatteryCapacity());
-            _drone.setState(_drone.getState());
-            return new ResponseEntity<>(droneRepository.save(_drone), HttpStatus.OK);
+            return new ResponseEntity<>(DRONE_BINDER.bind(droneRepository.save(DRONE_BINDER.bind(droneTO))), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

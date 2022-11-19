@@ -1,5 +1,7 @@
 package com.dev.drones.controller;
 
+import com.dev.drones.contract.to.MedicationTO;
+import com.dev.drones.model.Drone;
 import com.dev.drones.model.Medication;
 import com.dev.drones.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.dev.drones.contract.DroneBinder.DRONE_BINDER;
+import static com.dev.drones.contract.MedicationBinder.MEDICATION_BINDER;
 
 @RestController
 @RequestMapping("/api")
@@ -18,10 +24,13 @@ public class MedicationController {
     MedicationRepository medicationRepository;
 
     @GetMapping("/medications")
-    public ResponseEntity<List<Medication>> getAllMedications() {
+    public ResponseEntity<List<MedicationTO>> getAllMedications() {
         try {
-            List<Medication> medications = new ArrayList<>();
-            medicationRepository.findAll().forEach(medications::add);
+            List<MedicationTO> medications = new ArrayList<>();
+            medicationRepository.findAll()
+                    .stream()
+                    .map(medication ->  MEDICATION_BINDER.bind(medication))
+                    .forEach(medications::add);
             if (medications.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -32,39 +41,31 @@ public class MedicationController {
     }
 
     @GetMapping("/medications/{id}")
-    public ResponseEntity<Medication> getMedicationById(@PathVariable("id") long id) {
+    public ResponseEntity<MedicationTO> getMedicationById(@PathVariable("id") long id) {
         Optional<Medication> medicationData = medicationRepository.findById(id);
         if (medicationData.isPresent()) {
-            return new ResponseEntity<>(medicationData.get(), HttpStatus.OK);
+            return new ResponseEntity<>(MEDICATION_BINDER.bind(medicationData.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/medications")
-    public ResponseEntity<Medication> createMedication(@RequestBody Medication medication) {
+    public ResponseEntity<MedicationTO> createMedication(@Valid @RequestBody MedicationTO medicationTO) {
         try {
             Medication _medication = medicationRepository
-                    .save(new Medication( medication.getName(),
-                            medication.getWeight(),
-                            medication.getCode(),
-                            medication.getImage()));
-            return new ResponseEntity<>(_medication, HttpStatus.CREATED);
+                    .save(MEDICATION_BINDER.bind(medicationTO));
+            return new ResponseEntity<>(MEDICATION_BINDER.bind(_medication), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/medications/{id}")
-    public ResponseEntity<Medication> updateMedication(@PathVariable("id") long id, @RequestBody Medication medication) {
+    public ResponseEntity<MedicationTO> updateMedication(@PathVariable("id") long id, @Valid @RequestBody MedicationTO medicationTO) {
         Optional<Medication> medicationData = medicationRepository.findById(id);
         if (medicationData.isPresent()) {
-            Medication _medication = medicationData.get();
-            _medication.setName(_medication.getName());
-            _medication.setWeight(_medication.getWeight());
-            _medication.setCode(_medication.getCode());
-            _medication.setImage(_medication.getImage());
-            return new ResponseEntity<>(medicationRepository.save(_medication), HttpStatus.OK);
+            return new ResponseEntity<>(MEDICATION_BINDER.bind(medicationRepository.save(MEDICATION_BINDER.bind(medicationTO))), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

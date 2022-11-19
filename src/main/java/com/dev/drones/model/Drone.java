@@ -1,6 +1,5 @@
 package com.dev.drones.model;
 
-import com.dev.drones.model.base.EntityBase;
 import com.dev.drones.model.type.Model;
 import com.dev.drones.model.type.State;
 
@@ -9,7 +8,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "drones")
-public class Drone extends EntityBase {
+public class Drone{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column(name = "serialNumber")
     private String serialNumber;
@@ -43,6 +46,14 @@ public class Drone extends EntityBase {
         this.weightLimit = weightLimit;
         this.batteryCapacity = batteryCapacity;
         this.state = state;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getSerialNumber() {

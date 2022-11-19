@@ -2,9 +2,10 @@ package com.dev.drones.contract.to;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class MedicationTO {
+public class MedicationTO implements Serializable {
 
     private long id;
 

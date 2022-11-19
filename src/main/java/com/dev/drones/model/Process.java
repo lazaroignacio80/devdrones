@@ -1,22 +1,29 @@
 package com.dev.drones.model;
 
-import com.dev.drones.model.base.EntityBase;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Table(name = "process")
-public class Process extends EntityBase {
+public class Process{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @ManyToOne
     private Drone drone;
 
     @ManyToMany
     private Set<Medication> medications;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Drone getDrone() {
         return drone;

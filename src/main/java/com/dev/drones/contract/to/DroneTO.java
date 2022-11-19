@@ -8,9 +8,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class DroneTO {
+public class DroneTO implements Serializable {
 
     private long id;
 
@@ -28,6 +29,8 @@ public class DroneTO {
     private double weightLimit;
 
     @NotNull(message = "Battery capacity is required")
+    @Max(value = ConstantEntity.PERCENT_MAX, message
+            = "The percent must have 100% maximum")
     private double batteryCapacity;
 
     private State state;

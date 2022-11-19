@@ -1,17 +1,15 @@
 package com.dev.drones.model;
 
-import com.dev.drones.model.base.EntityBase;
-import com.dev.drones.model.type.Model;
-import com.dev.drones.model.type.State;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "medications")
-public class Medication extends EntityBase {
+public class Medication{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -38,6 +36,14 @@ public class Medication extends EntityBase {
         this.weight = weight;
         this.code = code;
         this.image = image;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

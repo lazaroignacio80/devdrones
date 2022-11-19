@@ -2,6 +2,7 @@ package com.dev.drones.controller;
 
 import com.dev.drones.contract.to.DroneTO;
 import com.dev.drones.model.Drone;
+import com.dev.drones.model.type.State;
 import com.dev.drones.repository.DroneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ public class DroneController {
     @PostMapping("/drones")
     public ResponseEntity<DroneTO> createDrone(@Valid @RequestBody DroneTO droneTO) {
         try {
+            droneTO.setState(State.IDLE);
             Drone _drone = droneRepository
                     .save(DRONE_BINDER.bind(droneTO));
             return new ResponseEntity<>(DRONE_BINDER.bind(_drone), HttpStatus.CREATED);

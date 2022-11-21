@@ -2,6 +2,7 @@ package com.dev.drones.contract.to;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,13 +10,15 @@ public class MedicationTO implements Serializable {
 
     private long id;
 
+    @Pattern(regexp = "^[a-zA-Z0-9_-]*$", message = "Only letters, numbers and special characters such as '-' and '_' are allowed")
     @NotBlank(message = "Name is required")
     private String name;
 
     @NotNull(message = "Weight is required")
     private double weight;
 
-    @NotBlank(message = "Serial number is required")
+    @Pattern(regexp = "^[A-Z0-9_]*$", message = "Only uppercase letters, numbers and special characters like '_' are allowed")
+    @NotBlank(message = "Code is required")
     private String code;
 
     private String image;

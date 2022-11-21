@@ -11,9 +11,7 @@ public interface ProcessBinder {
 
     ProcessBinder PROCESS_BINDER = Mappers.getMapper(ProcessBinder.class);
 
-    @Mapping(target = "id", ignore = true)
     Process bind(ProcessTO source);
-
     ProcessTO bind(Process source);
 
 }

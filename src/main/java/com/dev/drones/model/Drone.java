@@ -32,7 +32,7 @@ public class Drone{
     private State state;
 
     public Drone() {
-        super();
+
     }
 
     public Drone(String serialNumber,
@@ -40,7 +40,6 @@ public class Drone{
                  double weightLimit,
                  double batteryCapacity,
                  State state) {
-        super();
         this.serialNumber = serialNumber;
         this.model = model;
         this.weightLimit = weightLimit;

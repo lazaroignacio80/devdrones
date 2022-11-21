@@ -5,4 +5,6 @@ public class ConstantEntity {
     public static final int SERIAL_NUMBER_MAX = 100;
     public static final long WEIGHT_LIMIT_MAX = 500;
     public static final long PERCENT_MAX = 100;
+    public static final long LEVEL_BATTERY_MIN = 25;
+
 }

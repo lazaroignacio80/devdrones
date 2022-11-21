@@ -11,9 +11,7 @@ public interface DroneBinder {
 
     DroneBinder DRONE_BINDER = Mappers.getMapper(DroneBinder.class);
 
-    @Mapping(target = "id", ignore = true)
     Drone bind(DroneTO source);
-
     DroneTO bind(Drone source);
 
 }

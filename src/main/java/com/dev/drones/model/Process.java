@@ -17,6 +17,15 @@ public class Process{
     @ManyToMany
     private Set<Medication> medications;
 
+    public Process(){
+
+    }
+
+    public Process(Drone drone, Set<Medication> medications) {
+        this.drone = drone;
+        this.medications = medications;
+    }
+
     public long getId() {
         return id;
     }

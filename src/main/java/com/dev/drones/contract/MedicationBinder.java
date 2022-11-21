@@ -13,9 +13,7 @@ public interface MedicationBinder {
 
     MedicationBinder MEDICATION_BINDER = Mappers.getMapper(MedicationBinder.class);
 
-    @Mapping(target = "id", ignore = true)
     Medication bind(MedicationTO source);
-
     MedicationTO bind(Medication source);
 
 }
